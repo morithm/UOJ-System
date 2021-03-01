@@ -8,7 +8,7 @@ services:
     volumes:
       - ./uoj_data/db/mysql:/var/lib/mysql
     environment:
-      - MYSQL_DATABASE=app_uoj233
+      - MYSQL_DATABASE=app_moj
       - MYSQL_ROOT_PASSWORD=root
   
   uoj-judger:

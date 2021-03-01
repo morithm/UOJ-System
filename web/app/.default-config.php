@@ -1,15 +1,15 @@
 <?php
 return [
 	'profile' => [
-		'oj-name' => 'Universal Online Judge',
-		'oj-name-short' => 'UOJ',
+		'oj-name' => 'Morithm Online Judge',
+		'oj-name-short' => 'MOJ',
 		'administrator' => 'root',
-		'admin-email' => 'admin@local_uoj.ac',
+		'admin-email' => 'admin@morithm.com',
 		'QQ-group' => '',
 		'ICP-license' => ''
 	],
 	'database' => [
-		'database' => 'app_uoj233',
+		'database' => 'app_moj',
 		'username' => 'root',
 		'password' => '_database_password_',
 		'host' => '127.0.0.1'
@@ -37,9 +37,9 @@ return [
 	],
 	'mail' => [
 		'noreply' => [
-			'username' => 'noreply@local_uoj.ac',
+			'username' => 'noreply@morithm.com',
 			'password' => '_mail_noreply_password_',
-			'host' => 'smtp.local_uoj.ac',
+			'host' => 'smtp.morithm.com',
 			'secure' => 'tls',
 			'port' => 587
 		]

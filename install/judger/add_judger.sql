@@ -1,2 +1,2 @@
-USE `app_uoj233`;
+USE `app_moj`;
 insert into judger_info (judger_name, password, ip) values ('compose_judger', '_judger_password_', 'uoj-judger');
