@@ -1,3 +1,5 @@
+@import url('/fonts/fira-code/fira_code.css');
+
 html {
 	font-size: 14px
 }
@@ -46,9 +48,6 @@ a sub {
 	text-indent: 2em;
 }
 
-article p {
-	text-indent: 2em;
-}
 .markdown-editor-out p {
 	text-indent: 2em;
 	word-break: break-all;
@@ -392,4 +391,22 @@ pre {
 	width:50%;
 	padding-left:10px;
 	text-align:left;
+}
+
+.CodeMirror span {
+	font-family: 'Fira Code';
+}
+
+.fa-copy {
+    top: 0;
+    right: 0;
+    display: block;
+    font-size: 12px;
+    color: #767676;
+    cursor: pointer;
+    background-color: #fff;
+    border: 1px solid #e1e1e8;
+    border-radius: 0 4px;
+    position: absolute;
+    padding: 5px 8px;
 }
