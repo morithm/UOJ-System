@@ -3,7 +3,7 @@ genRandStr(){
     cat /dev/urandom | tr -dc [:alnum:] | head -c $1
 }
 #Set some vars
-_database_password_=$(genRandStr 32)
+_database_password_=root
 _judger_socket_port_=2233
 _judger_socket_password_=$(genRandStr 32)
 _main_judger_password_=$(genRandStr 32)
