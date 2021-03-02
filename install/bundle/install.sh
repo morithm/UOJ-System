@@ -124,7 +124,7 @@ initProgress(){
     sed -i -e "s/salt0/$(genRandStr 32)/g" -e "s/salt1/$(genRandStr 16)/g" -e "s/salt2/$(genRandStr 16)/g" -e "s/salt3/$(genRandStr 16)/g" -e "s/_judger_socket_password_/$_judger_socket_password_/g" /var/www/uoj/app/.config.php
     #Import judge_client to MySQL database
     service mysql start
-    echo "insert into judger_info (judger_name, password) values (\"main_judger\", \"$_main_judger_password_\")" | mysql app_uoj233 -u root --password=$_database_password_
+    echo "insert into judger_info (judger_name, password) values (\"main_judger\", \"$_main_judger_password_\")" | mysql app_moj -u root --password=$_database_password_
     #Using cli upgrade to latest
     php /var/www/uoj/app/cli.php upgrade:latest
     #Start services
