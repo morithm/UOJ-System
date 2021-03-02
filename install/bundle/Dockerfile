@@ -4,13 +4,10 @@ ARG CLONE_ADDFLAG
 
 WORKDIR /opt
 ENV DEBIAN_FRONTEND=noninteractive
-#Use ustc mirror
-RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
-RUN sed -i 's/security.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 #Update apt and install git
 RUN apt-get update && apt-get install -y apache2 cmake curl fp-compiler g++ git gnupg libapache2-mod-php libapache2-mod-xsendfile libyaml-dev make mysql-server ntp openjdk-11-jdk openjdk-8-jdk php php-dev php-mbstring php-mysql php-pear php-zip python python3 python3-requests re2c unzip vim wget zip --no-install-recommends
 #Clone the latest UOJ Community verison to local
-RUN git clone https://github.com.cnpmjs.org/morithm/UOJ-System.git --depth 1 --single-branch  --branch dev ${CLONE_ADDFLAG} uoj
+RUN git clone https://github.com/UniversalOJ/UOJ-System.git --depth 1 --single-branch ${CLONE_ADDFLAG} uoj
 #Install environment and set startup script
 RUN cd uoj/install/bundle && sh install.sh -p && echo "\
 #!/bin/sh\n\
