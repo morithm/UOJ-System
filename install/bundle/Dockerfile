@@ -26,6 +26,7 @@ exec bash\n" >/opt/up && chmod +x /opt/up
 
 VOLUME /opt/uoj
 VOLUME /var/lib/mysql
+VOLUME /var/uoj_data
 
 ENV LANG=C.UTF-8 TZ=Asia/Shanghai
 EXPOSE 80 3690
