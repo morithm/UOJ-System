@@ -75,7 +75,7 @@ file_put_contents('/var/www/uoj/app/.config.php', "<?php\nreturn ".str_replace('
 UOJEOF
     #Import MySQL database
     service mysql restart
-    mysql -u root --password=$_database_password_ <../db/app_uoj233.sql
+    mysql -u root --password=$_database_password_ <../db/app_moj.sql
     echo "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$_database_password_';" | mysql -u root --password=$_database_password_
 }
 

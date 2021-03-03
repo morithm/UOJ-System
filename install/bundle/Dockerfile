@@ -24,6 +24,9 @@ service apache2 start\n\
 su local_main_judger -c \"/opt/uoj/judger/judge_client start\"\n\
 exec bash\n" >/opt/up && chmod +x /opt/up
 
+VOLUME /opt/uoj
+VOLUME /var/lib/mysql
+
 ENV LANG=C.UTF-8 TZ=Asia/Shanghai
 EXPOSE 80 3690
 CMD /opt/up
