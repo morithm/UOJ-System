@@ -10,6 +10,7 @@ return [
 	'system manage' => '系统管理',
 	'contests' => '比赛',
 	'problems' => '题库',
+	'training' => '训练',
 	'submissions' => '提交记录',
 	'hacks' => 'Hack!',
 	'blogs' => '博客',
@@ -32,7 +33,7 @@ return [
 	'browse' => '浏览',
 	'score range' => '分数范围',
 	'details' => '详细',
-	'hours' => function($h) {
+	'hours' => function ($h) {
 		return "$h 小时";
 	},
 	'title' => '标题',
@@ -42,12 +43,12 @@ return [
 	'user profile' => '用户信息',
 	'send private message' => '发送私信',
 	'modify my profile' => '更改个人信息',
-	'visit his blog' => function($name) {
+	'visit his blog' => function ($name) {
 		return "访问 $name 的博客";
 	},
 	'rating changes' => 'Rating 变化',
 	'accepted problems' => 'AC 过的题目',
-	'n problems in total' => function($n) {
+	'n problems in total' => function ($n) {
 		return "共 $n 道题";
 	},
 	'please enter your password for authorization' => '请输入您的密码进行身份验证',

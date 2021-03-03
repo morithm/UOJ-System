@@ -33,6 +33,14 @@ Route::group(
 		Route::any('/contest/{contest_id}/problem/{id}', '/problem.php');
 		Route::any('/contest/{contest_id}/problem/{id}/statistics', '/problem_statistics.php');
 
+		Route::any('/trainings', '/training/training_list.php');
+		Route::any('/training/{id}', '/training/training_details.php');
+		Route::any('/training/{id}/locked', '/training/training_locked.php');
+		Route::any('/training/{id}/manage/statement', '/training/training_statement_manage.php');
+		Route::any('/training/{id}/manage/content', '/training/training_content_manage.php');
+		Route::any('/training/{id}/manage/condition', '/training/training_condition_manage.php');
+		Route::any('/training/{id}/statistics', '/training/training_statistics.php');
+
 		Route::any('/submissions', '/submissions_list.php');
 		Route::any('/submission/{id}', '/submission.php');
 		Route::any('/submission-status-details', '/submission_status_details.php');

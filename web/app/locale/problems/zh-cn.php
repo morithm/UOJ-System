@@ -4,6 +4,7 @@ return [
 	'all problems' => '总题库',
 	'template problems' => '模板题库',
 	'add new' => '添加新题',
+	'tags' => '标签',
 	'ac' => 'AC',
 	'submit' => '提交',
 	'ac ratio' => 'AC 率',
@@ -17,7 +18,7 @@ return [
 	'run' => '运行',
 	'source code' => '源文件',
 	'text file' => '文本文件',
-	'zip file upload introduction' => function($str) {
+	'zip file upload introduction' => function ($str) {
 		return "上传一个zip压缩文件，包含 {$str}：";
 	},
 	'or upload files one by one' => '或者逐个上传：',
