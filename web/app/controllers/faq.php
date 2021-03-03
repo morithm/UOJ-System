@@ -1,7 +1,7 @@
 <?php
-	requireLib('shjs');
-	requireLib('mathjax');
-	echoUOJPageHeader(UOJLocale::get('help')) 
+requireLib('shjs');
+requireLib('mathjax');
+echoUOJPageHeader(UOJLocale::get('help'))
 ?>
 <article>
 	<header>
@@ -59,7 +59,7 @@
 		</div>
 		<div class="card my-1">
 			<div class="card-header collapsed" id="headerFour" data-toggle="collapse" data-target="#collapseFour" style="cursor:pointer;">
-				<h5 class="mb-0">各种评测状态的鸟语是什么意思？</h5>
+				<h5 class="mb-0">各种评测状态是什么意思？</h5>
 			</div>
 			<div id="collapseFour" class="collapse">
 				<div class="card-body">
@@ -117,15 +117,24 @@
 					<p>我就只介绍最基本的功能好了。其它的自己探索吧～比如<a href="http://wow.kuapp.com/markdown/">这里</a>。</p>
 					<!-- readmore -->
 					<p><code>**强调**</code> = <strong>强调</strong></p>
-					<hr /><p><code>*强调*</code> = <em>强调</em></p>
-					<hr /><p><code>[<?= UOJConfig::$data['profile']['oj-name-short'] ?>](<?= HTML::url('/') ?>)</code> = <a href="<?= HTML::url('/') ?>"><?= UOJConfig::$data['profile']['oj-name-short'] ?></a></p>
-					<hr /><p><code><?= HTML::url('/') ?></code> = <a href="http://<?= UOJConfig::$data['web']['main']['host'] ?>"><?= HTML::url('/') ?></a></p>
-					<hr /><p><code>![这个文字在图挂了的时候会显示](<?= HTML::url('/images/favicon.ico') ?>)</code> =
-					<img src="<?= HTML::url('/images/favicon.ico') ?>" alt="这个文字在图挂了的时候会显示" /></p>
-					<hr /><p><code>`rm orz`</code> = <code>rm orz</code></p>
-					<hr /><p><code>数学公式萌萌哒$(a + b)^2$萌萌哒</code> = 数学公式萌萌哒$(a + b)^2$萌萌哒</p>
-					<hr /><p><code>&lt;!-- readmore --&gt;</code> = 在外面看这篇博客时会到此为止然后显示一个“阅读更多”字样</p>
-					<hr /><p>来个更大的例子：</p>
+					<hr />
+					<p><code>*强调*</code> = <em>强调</em></p>
+					<hr />
+					<p><code>[<?= UOJConfig::$data['profile']['oj-name-short'] ?>](<?= HTML::url('/') ?>)</code> = <a href="<?= HTML::url('/') ?>"><?= UOJConfig::$data['profile']['oj-name-short'] ?></a></p>
+					<hr />
+					<p><code><?= HTML::url('/') ?></code> = <a href="http://<?= UOJConfig::$data['web']['main']['host'] ?>"><?= HTML::url('/') ?></a></p>
+					<hr />
+					<p><code>![这个文字在图挂了的时候会显示](<?= HTML::url('/images/favicon.ico') ?>)</code> =
+						<img src="<?= HTML::url('/images/favicon.ico') ?>" alt="这个文字在图挂了的时候会显示" />
+					</p>
+					<hr />
+					<p><code>`rm orz`</code> = <code>rm orz</code></p>
+					<hr />
+					<p><code>数学公式萌萌哒$(a + b)^2$萌萌哒</code> = 数学公式萌萌哒$(a + b)^2$萌萌哒</p>
+					<hr />
+					<p><code>&lt;!-- readmore --&gt;</code> = 在外面看这篇博客时会到此为止然后显示一个“阅读更多”字样</p>
+					<hr />
+					<p>来个更大的例子：</p>
 					<pre>
 					```c++
 					#include &lt;iostream&gt;
@@ -158,13 +167,14 @@
 					<pre><code class="sh_pascal">begin</code></pre>
 					<pre><code class="sh_python">print '<?= UOJConfig::$data['profile']['oj-name-short'] ?>'</code></pre>
 					<p>\begin{equation}
-					\frac{-b + \sqrt{b^2 - 4ac}}{2a}
-					\end{equation}</p>
+						\frac{-b + \sqrt{b^2 - 4ac}}{2a}
+						\end{equation}</p>
 					<h1>一级标题</h1>
 					<h2>二级标题</h2>
 					<h3>三级标题</h3>
 					<h4>四级标题</h4>
-					<hr /><p>还有一个很重要的事情，就是你很容易以为<?= UOJConfig::$data['profile']['oj-name-short'] ?>在吃换行……</p>
+					<hr />
+					<p>还有一个很重要的事情，就是你很容易以为<?= UOJConfig::$data['profile']['oj-name-short'] ?>在吃换行……</p>
 					<p>那是因为跟LaTeX一样，你需要一个空行来分段。你可以粗略地认为两个换行会被替换成一换行。（当然不完全是这样，空行是用来分段的，段落还有间距啊行首空两格啊之类的属性）</p>
 					<p>唔……就介绍到这里吧。想要更详细的介绍上网搜搜吧～</p>
 					<p>（评论区是不可以用任何HTML滴～但是数学公式还是没问题滴）</p>
@@ -197,8 +207,8 @@
 					<ul>
 						<li>私信联系<?= UOJConfig::$data['profile']['administrator'] ?>。</li>
 						<li>邮件联系<?= UOJConfig::$data['profile']['admin-email'] ?>。</li>
-						<?php if (UOJConfig::$data['profile']['QQ-group']!=''): ?>
-						<li>你也可以进QQ群水水，群号是<?= UOJConfig::$data['profile']['QQ-group'] ?>。</li>
+						<?php if (UOJConfig::$data['profile']['QQ-group'] != '') : ?>
+							<li>你也可以进QQ群水水，群号是<?= UOJConfig::$data['profile']['QQ-group'] ?>。</li>
 						<?php endif ?>
 					</ul>
 				</div>

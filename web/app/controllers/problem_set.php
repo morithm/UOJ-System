@@ -34,13 +34,14 @@ function echoProblem($problem)
 		if ($problem['is_hidden']) {
 			echo ' <span class="text-danger">[隐藏]</span> ';
 		}
-		echo '<a href="/problem/', $problem['id'], '">', $problem['title'], '</a>';
+		echo '<a href="/problem/', $problem['id'], '">', $problem['title'], '</a></td>';
 		if (isset($_COOKIE['show_tags_mode'])) {
+			echo '<td>';
 			foreach (queryProblemTags($problem['id']) as $tag) {
 				echo '<a class="uoj-problem-tag">', '<span class="badge badge-pill badge-secondary">', HTML::escape($tag), '</span>', '</a>';
 			}
+			echo '</td>';
 		}
-		echo '</td>';
 		if (isset($_COOKIE['show_submit_mode'])) {
 			$perc = $problem['submit_num'] > 0 ? round(100 * $problem['ac_num'] / $problem['submit_num']) : 0;
 			echo <<<EOD
@@ -85,6 +86,9 @@ if ($cond) {
 $header = '<tr>';
 $header .= '<th class="text-center" style="width:5em;">ID</th>';
 $header .= '<th>' . UOJLocale::get('problems::problem') . '</th>';
+if (isset($_COOKIE['show_tags_mode'])) {
+	$header .= '<th class="text-center" style="width:10em;">' . UOJLocale::get('problems::tags') . '</th>';
+}
 if (isset($_COOKIE['show_submit_mode'])) {
 	$header .= '<th class="text-center" style="width:5em;">' . UOJLocale::get('problems::ac') . '</th>';
 	$header .= '<th class="text-center" style="width:5em;">' . UOJLocale::get('problems::submit') . '</th>';
