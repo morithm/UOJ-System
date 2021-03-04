@@ -4,6 +4,87 @@
 
 > #### 一款通用的在线评测系统。
 
+## 安装
+
+```bash
+sudo docker run --name uoj -dit -p 80:80 -p 3690:3690 --cap-add SYS_PTRACE universaloj/uoj-system
+```
+
+## 版本更新
+
+### 方法一
+
+包含数据的三个文件夹： ``mysql``，``uoj_data``，``storage`` 。
+
+把三个文件夹复制出来：
+
+```bash
+sudo docker cp uoj:/var/lib/mysql .
+sudo docker cp uoj:/var/uoj_data .
+sudo docker cp uoj:/var/www/uoj/app/storage .
+```
+
+配置文件：``/opt/uoj/judger/.conf.json``，``/opt/uoj/web/app/.config.php``
+
+复制出来
+
+```bash
+sudo docker cp uoj:/opt/uoj/judger/.conf.json .
+sudo docker cp uoj:/opt/uoj/web/app/.config.php .
+```
+
+然后更新``image``
+
+```bash
+sudo docker pull universaloj/uoj-system
+```
+
+删除旧的 ``container`` 并重新安装，利用 ``-v`` 映射一下文件夹
+
+```bash
+sudo docker stop uoj
+sudo docker rm uoj
+sudo docker run --name uoj -dit -p 80:80 -p 3690:3690 -v $PWD/mysql:/var/lib/mysql -v $PWD/uoj_data:/var/uoj_data -v $PWD/storage:/var/www/uoj/app/storage --cap-add SYS_PTRACE universaloj/uoj-system
+```
+
+粘贴配置文件：
+
+```bash
+sudo docker cp .conf.json uoj:/opt/uoj/judger/.conf.json
+sudo docker cp .config.php uoj:/opt/uoj/web/app/.config.php
+```
+
+因为几个文件夹是映射的，所以要重新 ``chown`` 一下(如果 ``Dockerfile``配了 ``VOLUME``) 就不用
+```bash
+chown -R www-data /var/www/uoj/app/storage
+chown -R www-data:www-data /var/uoj_data
+su local_main_judger -c '/opt/uoj/judger/judge_client start'
+```
+
+### 方法二
+
+上面这种方式比较麻烦，可以直接暴力一点把 ``/opt/uoj`` 用``volume``映射，然后 ``git pull`` 更新版本
+
+#### 准备工作
+
+```bash
+sudo docker cp uoj:/var/lib/mysql .
+sudo docker cp uoj:/opt/uoj .
+sudo docker stop uoj
+sudo docker rm uoj
+sudo docker run --name uoj -dit -p 80:80 -p 3690:3690 -v $PWD/mysql:/var/lib/mysql -v $PWD/uoj:/opt/uoj --cap-add SYS_PTRACE universaloj/uoj-system
+```
+
+#### 更新
+
+```bash
+cd uoj
+# 这里注意 .gitignore 配置一下 config 数据这些
+git pull origin
+```
+
+更新完记得 ``chown`` 一下
+
 ## 特性
 
 - 前后端全面更新为 Bootstrap 4 + PHP 7。
