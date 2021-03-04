@@ -82,7 +82,6 @@ function queryTrainingCondNum($id)
 function updateTrainingCompletion($id)
 {
     DB::delete("delete from trainings_completion where training_id = $id");
-    if (DB::selectFirst("select * from trainings_includes where p_id = $id", MYSQLI_NUM)) return;
     DB::insert("insert into trainings_completion (select $id training_id, username user, NOW() time from user_info where username not in (select username from (select username from user_info) as T2, (select distinct s_id from trainings_includes where p_id = $id) as T3 where (username, s_id) not in (select submitter username, problem_id s_id from best_ac_submissions)))");
 }
 
@@ -106,11 +105,6 @@ function echoTraining($training)
 </svg>';
         }
         echo '<a href="/training/', $training['id'], '">', $training['title'], '</a>';
-        if (isset($_COOKIE['show_tags_mode'])) {
-            foreach (queryTrainingTags($training['id']) as $tag) {
-                echo '<a class="uoj-training-tag">', '<span class="badge badge-pill badge-secondary">', HTML::escape($tag), '</span>', '</a>';
-            }
-        }
 
         echo '</td>';
         if ($myUser != null) {
