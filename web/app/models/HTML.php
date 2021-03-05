@@ -138,6 +138,8 @@ class HTML
 	}
 	public static function css_link($uri, $config = array('location' => 'main'))
 	{
+		if (isset(UOJConfig::$data['web']['cdn']))
+			return '<link type="text/css" rel="stylesheet" href="' . UOJConfig::$data['web']['cdn'] . $uri . '" />';
 		return '<link type="text/css" rel="stylesheet" href="' . HTML::url($uri, $config) . '" />';
 	}
 
