@@ -58,6 +58,7 @@ sudo docker cp .config.php uoj:/opt/uoj/web/app/.config.php
 ```bash
 chown -R www-data /var/www/uoj/app/storage
 chown -R www-data:www-data /var/uoj_data
+chown -R local_main_judger:local_main_judger /opt/uoj/judger
 su local_main_judger -c '/opt/uoj/judger/judge_client start'
 ```
 
@@ -72,7 +73,7 @@ sudo docker cp uoj:/var/lib/mysql .
 sudo docker cp uoj:/opt/uoj .
 sudo docker stop uoj
 sudo docker rm uoj
-sudo docker run --name uoj -dit -p 80:80 -p 3690:3690 -v $PWD/mysql:/var/lib/mysql -v $PWD/uoj:/opt/uoj --cap-add SYS_PTRACE universaloj/uoj-system
+sudo docker run --name uoj -dit -p 80:80 -p 3690:3690 -v $PWD/mysql:/var/lib/mysql -v $PWD/uoj:/opt/uoj -v $PWD/uoj_data:/var/uoj_data --cap-add SYS_PTRACE universaloj/uoj-system
 ```
 
 #### 更新
