@@ -200,6 +200,13 @@ if (!isset($ShowPageHeader)) {
 		<?= HTML::js_src('/js/raphael.min.js') ?>
 	<?php endif ?>
 
+	<?php if (isset($REQUIRE_LIB['react'])) : ?>
+		<!-- react -->
+		<?= HTML::js_src('/js/react-app/react.production.min.js') ?>
+
+		<?= HTML::js_src('/js/react-app/react-dom.production.min.js') ?>
+	<?php endif ?>
+
 	<?php if (isset($REQUIRE_LIB['shjs'])) : ?>
 		<!-- shjs -->
 		<?= HTML::css_link('/css/sh_typical.min.css') ?>
