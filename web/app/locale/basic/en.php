@@ -11,6 +11,7 @@ return [
 	'contests' => 'Contests',
 	'problems' => 'Problems',
 	'training' => 'Training',
+	'code game' => 'Code Game',
 	'submissions' => 'Submissions',
 	'hacks' => 'Hack!',
 	'blogs' => 'Blogs',

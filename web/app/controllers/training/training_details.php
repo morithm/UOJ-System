@@ -63,6 +63,10 @@ $table_classes = array('table', 'table-bordered', 'table-hover', 'table-striped'
 
 ?>
 
+<?php
+$REQUIRE_LIB['shjs'] = '';
+?>
+
 <?php echoUOJPageHeader(HTML::stripTags($training['title']) . ' - ' . UOJLocale::get('training::training')) ?>
 
 <h1 class="page-header text-center">#<?= $training['id'] ?>. <?= $training['title'] ?></h1>

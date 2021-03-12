@@ -202,9 +202,8 @@ if (!isset($ShowPageHeader)) {
 
 	<?php if (isset($REQUIRE_LIB['react'])) : ?>
 		<!-- react -->
-		<?= HTML::js_src('/js/react-app/react.production.min.js') ?>
-
-		<?= HTML::js_src('/js/react-app/react-dom.production.min.js') ?>
+		<?= HTML::js_src('/js/react-app/react.development.js') ?>
+		<?= HTML::js_src('/js/react-app/react-dom.development.js') ?>
 	<?php endif ?>
 
 	<?php if (isset($REQUIRE_LIB['shjs'])) : ?>

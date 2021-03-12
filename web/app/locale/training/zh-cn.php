@@ -1,6 +1,6 @@
 <?php
 return [
-    'training' => '训练',
+    'training' => '课程',
     'add new' => '添加训练',
     'completion' => '完成度',
     'total tasks' => '任务数',

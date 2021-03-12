@@ -10,6 +10,7 @@
 				<li class="nav-item"><a class="nav-link" href="<?= HTML::url('/problems') ?>"><span class="glyphicon glyphicon-list-alt"></span> <?= UOJLocale::get('problems') ?></a></li>
 				<li class="nav-item"><a class="nav-link" href="<?= HTML::url('/trainings') ?>"><span class="glyphicon glyphicon-book"></span> <?= UOJLocale::get('training') ?></a></li>
 				<li class="nav-item"><a class="nav-link" href="<?= HTML::url('/submissions') ?>"><span class="glyphicon glyphicon-tasks"></span> <?= UOJLocale::get('submissions') ?></a></li>
+				<li class="nav-item"><a class="nav-link" href="<?= HTML::url('/code-games') ?>"><span class="glyphicon glyphicon-play"></span> <?= UOJLocale::get('code game') ?></a></li>
 				<li class="nav-item"><a class="nav-link" href="<?= HTML::blog_list_url() ?>"><span class="glyphicon glyphicon-edit"></span> <?= UOJLocale::get('blogs') ?></a></li>
 				<li class="nav-item"><a class="nav-link" href="<?= HTML::url('/faq') ?>"><span class="glyphicon glyphicon-info-sign"></span> <?= UOJLocale::get('help') ?></a></li>
 			</ul>
