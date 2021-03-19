@@ -3,7 +3,7 @@
 Route::pattern('username', '[a-zA-Z0-9_]{1,20}');
 Route::pattern('id', '[1-9][0-9]{0,9}');
 Route::pattern('contest_id', '[1-9][0-9]{0,9}');
-Route::pattern('api', '\S{1,20}');
+Route::pattern('api', '[a-z]{1,20}');
 Route::pattern('tab', '\S{1,20}');
 Route::pattern('rand_str_id', '[0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ]{20}');
 Route::pattern('upgrade_name', '[a-zA-Z0-9_]{1,50}');
@@ -74,7 +74,7 @@ Route::group(
 
 		Route::any('/code-games', '/code_game_set.php');
 		Route::any('/code-game/{id}', '/code_game.php');
-		Route::get('/code-game(?:/{api})?', '/code_game.php');
+		Route::get('/code-game/{id}(?:/{api})?', '/code_game.php');
 
 		Route::any('/click-zan', '/click_zan.php');
 	}

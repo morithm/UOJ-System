@@ -57,7 +57,42 @@ $user_form->handle = function () {
 			break;
 	}
 };
+
 $user_form->runAtServer();
+
+if (isset($_POST['user_data'])) {
+	$dataset = json_decode($_POST['user_data']);
+	$n = count($dataset);
+	for ($i = 0; $i < $n; $i++) {
+		$data = $dataset[$i];
+		$password = getPasswordToStore($data[6], $data[0]);
+		$ex_time = date($data[7]);
+		DB::query("insert into user_info (username, enter_year, class, truename, age, sex, password, expiration_time) values ('$data[0]', '$data[1]', '$data[2]', '$data[3]','$data[4]','$data[5]','$password', '$ex_time')");
+	}
+	echo 'ok';
+	die();
+}
+
+// if($_POST['user_info_file_submit']=='submit'){
+//     $up_filename="/tmp/user_to_import.csv";
+// 	move_uploaded_file($_FILES["user_info_file"]["tmp_name"], $up_filename);
+// 	$row = 1;
+// 	$users = [];
+// 	$passwords = [];
+//     if (($handle = fopen("/tmp/user_to_import.csv", "r")) !== FALSE) {
+//       while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+//         $num = count($data);
+//         $row++;
+//         $passwords[] = $data[6];
+//         $users[] = $data;
+// //         $ex_time = date($data[7]);
+// // 		$password = getPasswordToStore($data[6], $data[0]);
+// //         DB::query("insert into user_info (username, enter_year, class, truename, age, sex, password, expiration_time) values ('$data[0]', '$data[1]', '$data[2]', '$data[3]','$data[4]','$data[5]','$password', '$ex_time')");
+
+//       }
+//       fclose($handle);
+//     }
+// }
 
 $problem_import = new UOJForm('problem_import');
 
@@ -495,6 +530,7 @@ if (!isset($tabs_info[$cur_tab])) {
 <?php
 requireLib('shjs');
 requireLib('morris');
+$REQUIRE_LIB['md5'] = '';
 ?>
 <?php echoUOJPageHeader('系统管理') ?>
 <div class="row">
@@ -507,11 +543,21 @@ requireLib('morris');
 			<?php $user_form->printHTML(); ?>
 			<h3>封禁名单</h3>
 			<?php echoLongTable($banlist_cols, 'user_info', "usergroup='B'", '', $banlist_header_row, $banlist_print_row, $banlist_config) ?>
+			<h3>从txt导入用户</h3>
+			<p>格式为：学号,入学年份,班级,姓名,年龄,性别(M=男 F=女),初始密码,到期日期(yyyy-mm-dd)</p>
+			<p>属性用逗号隔开，一个用户一行，可以先用excel把表格制作好，然后重命名成txt后缀</p>
+			<p>点击下载<a href='/files/import_template.txt'>模板文件</a>(右键另存为，浏览器可能乱码)</p>
+			<div>
+				<input type="file" id="csv-upload">
+			</div>
+			<br />
+			<button type="button" class="btn btn-primary" id="user-import">确定导入</button>
 		<?php elseif ($cur_tab === 'problems') : ?>
 			<div>
 				<h3>批量操作</h3>
 
-				<?php $problem_import->printHTML(); ?>
+				<!--<?php $problem_import->printHTML(); ?>-->
+				<h4>批量导出</h4>
 				<?php $problem_export->printHTML(); ?>
 			</div>
 		<?php elseif ($cur_tab === 'blogs') : ?>
@@ -631,4 +677,35 @@ requireLib('morris');
 		<?php endif ?>
 	</div>
 </div>
+<script>
+	$(function() {
+
+
+		$('#user-import').click(function() {
+			let reader = new FileReader();
+			reader.onload = function(e) {
+				let text = reader.result;
+				let textLines = text.split(/\r\n|\n/);
+				let n = textLines.length;
+				let data = []
+				for (let i = 0; i < n; i++) {
+					let row = textLines[i].split(',');
+					row[6] = md5(row[6], "<?= getPasswordClientSalt() ?>");
+					data.push(row);
+				}
+				let json_data = JSON.stringify(data);
+				$.post('/super-manage', {
+					user_data: json_data
+				}, function(msg) {
+					if (msg == 'ok') {
+						alert('导入成功');
+					} else {
+						alert('导入失败');
+					}
+				});
+			};
+			reader.readAsText($('#csv-upload').get(0).files[0]);
+		});
+	});
+</script>
 <?php echoUOJPageFooter() ?>

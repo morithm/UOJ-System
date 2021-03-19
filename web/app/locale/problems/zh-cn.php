@@ -16,6 +16,7 @@ return [
 	'submissions statistics' => '统计提交情况',
 	'statistics' => '统计',
 	'run' => '运行',
+	'compile' => '编译',
 	'source code' => '源文件',
 	'text file' => '文本文件',
 	'zip file upload introduction' => function ($str) {

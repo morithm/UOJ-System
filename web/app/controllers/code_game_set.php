@@ -77,6 +77,8 @@ if (isset($_GET["search"])) {
     $cond[] = "title like '%" . DB::escape($_GET["search"]) . "%' or id like '%" . DB::escape($_GET["search"]) . "%'";
 }
 
+$cond[] = "'编程游戏' in (select tag from problems_tags where problems_tags.problem_id = problems.id)";
+
 if ($cond) {
     $cond = join($cond, ' and ');
 } else {

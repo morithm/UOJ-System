@@ -6,6 +6,10 @@ if (!validateUInt($_GET['id']) || !($problem = queryProblemBrief($_GET['id']))) 
 	become404Page();
 }
 
+if (DB::selectFirst("select * from problems_tags where problem_id = {$problem['id']} and tag = '编程游戏'")) {
+	redirectTo('/code-game/' . $_GET["id"]);
+}
+
 
 $problem_content = queryProblemContent($problem['id']);
 

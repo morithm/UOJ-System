@@ -1,16 +1,30 @@
-<?php if (isset($_GET['api'])) : ?>
-    <?php
+<?php
+requirePHPLib('form');
+requirePHPLib('judger');
+
+if (!validateUInt($_GET['id']) || !($problem = queryProblemBrief($_GET['id']))) {
+    become404Page();
+}
+
+if (!DB::selectFirst("select * from problems_tags where problem_id = {$problem['id']} and tag = '编程游戏'")) {
+    redirectTo('/problem/' . $_GET["id"]);
+}
+
+$problem_content = queryProblemContent($problem['id']);
+
+
+if (isset($_GET['api'])) {
+    // header("Access-Control-Allow-Origin: *");
+    // header("Access-Control-Allow-Headers: *");
     header("Content-type: application/json");
     if ($_GET['api'] == 'map') {
+        $handle = fopen("/var/uoj_data/${problem['id']}/ex_code_game1.in", "r") or die("Unable to open file!");
+        fscanf($handle, "%d %d\n", $row, $col);
+        fscanf($handle, "%[^\n]", $map);
         echo json_encode([
-            "# #@@@ #",
-            "#      #",
-            "#  #   #",
-            "#      #",
-            "#      #",
-            "#      #",
-            "#      #",
-            "@@@###@@"
+            "map" => $map,
+            "row" => $row,
+            "col" => $col
         ]);
     }
 
@@ -21,36 +35,25 @@
             $detail_str = $custom_test_submission_result['details'];
             preg_match('/\<out\>[\S]+\<\/out\>/',  $detail_str, $matches);
             echo json_encode(substr($matches[0], 5, -6));
-        } else {
-            echo json_encode('FFRFF');
         }
+        // else {
+        //     // echo json_encode("FFFFFRFF");
+        //     echo json_encode("FFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFR");
+        // }
     }
-    ?>
-
-<?php else : ?>
-    <?php
-    requirePHPLib('form');
-    requirePHPLib('judger');
-
-    if (!validateUInt($_GET['id']) || !($problem = queryProblemBrief($_GET['id']))) {
-        become404Page();
-    }
-
-
-    $problem_content = queryProblemContent($problem['id']);
-
-
+} else {
     if (!isProblemVisibleToUser($problem, $myUser)) {
         become404Page();
     }
+
     if (!isSuperUser($myUser) && $myUser['level'] < $problem['level']) {
         $level_text = UOJLocale::get('level', $problem['level']);
         becomeMsgPage("<h1>没有权限</h1><p>很遗憾，您的段位不足，请将段位提高到{$level_text}之后再来。</p>");
     }
 
-    $submission_requirement = json_decode($problem['submission_requirement'], true);
     $problem_extra_config = getProblemExtraConfig($problem);
     $custom_test_requirement = getProblemCustomTestRequirement($problem);
+
 
     if ($custom_test_requirement && Auth::check()) {
         $custom_test_submission = DB::selectFirst("select * from custom_test_submissions where submitter = '" . Auth::id() . "' and problem_id = {$problem['id']} order by id desc limit 1");
@@ -67,9 +70,7 @@
         } else {
             ob_start();
             $styler = new CustomTestSubmissionDetailsStyler();
-            if (!hasViewPermission($problem_extra_config['view_details_type'], $myUser, $problem, $submission)) {
-                $styler->fade_all_details = true;
-            }
+            $styler->fade_all_details = true;
             echoJudgementDetails($custom_test_submission_result['details'], $styler, 'custom_test_details');
             $result = ob_get_contents();
             ob_end_clean();
@@ -91,7 +92,7 @@
         $esc_content = DB::escape(json_encode($content));
 
         $language = '/';
-        foreach ($content['config'] as $row) {
+        foreach ([$content['config']] as $row) {
             if (strEndWith($row[0], '_language')) {
                 $language = $row[1];
                 break;
@@ -110,6 +111,8 @@
     }
 
     if ($custom_test_requirement) {
+        $custom_test_requirement[0]['languages'] = ['C++', 'C++11'];
+
         $custom_test_form = newSubmissionForm(
             'custom_test',
             $custom_test_requirement,
@@ -140,26 +143,32 @@
     function(response_text) {custom_test_onsubmit(response_text, $('#div-custom_test_result')[0], '{$_SERVER['REQUEST_URI']}?get=custom-test-status-details')}
     EOD
         );
-        $custom_test_form->submit_button_config['text'] = UOJLocale::get('problems::run');
+        $custom_test_form->submit_button_config['text'] = UOJLocale::get('problems::compile');
         $custom_test_form->runAtServer();
     }
-    ?>
-    <?php
-    $REQUIRE_LIB['mathjax'] = '';
-    $REQUIRE_LIB['shjs'] = '';
-    $REQUIRE_LIB['react'] = '';
-    ?>
-    <?php
-    $limit = getUOJConf("/var/uoj_data/{$problem['id']}/problem.conf");
-    $time_limit = $limit['time_limit'];
-    $memory_limit = $limit['memory_limit'];
-    ?>
+}
+?>
+<?php
+$REQUIRE_LIB['mathjax'] = '';
+$REQUIRE_LIB['shjs'] = '';
+$REQUIRE_LIB['react'] = '';
+?>
+<?php
+$limit = getUOJConf("/var/uoj_data/{$problem['id']}/problem.conf");
+$time_limit = $limit['time_limit'];
+$memory_limit = $limit['memory_limit'];
+?>
+<?php if (!isset($_GET['api'])) : ?>
     <style type="text/css">
         [data-toggle="collapse"].collapsed .if-not-collapsed {
             display: none;
         }
 
         [data-toggle="collapse"]:not(.collapsed) .if-collapsed {
+            display: none;
+        }
+
+        #form-group-custom_test_input {
             display: none;
         }
     </style>
@@ -181,18 +190,9 @@
     <div class="tab-content">
         <div class="tab-pane active" id="tab-statement">
             <div class="row">
-                <div id="code-game">
+                <div id="code-game" data-api-url="/code-game/<?= $problem['id'] ?>/">
                 </div>
-                <div class="col-sm-6 top-buffer-md">
-                    <p>请在代码中使用 <code>#include 'code_game.h'</code> 以添加支持</p>
-                    <br />
-                    <p>本题支持的函数如下：</p>
-                    <ul>
-                        <li><code>turnLeft()</code>：向左转</li>
-                        <li><code>turnRight()</code>：向右转</li>
-                        <li><code>forward()</code>：前进</li>
-                    </ul>
-                </div>
+                <article class="col-sm-6 col-xs-12 top-buffer-md"><?= $problem_content['statement'] ?></article>
             </div>
         </div>
         <?php if ($custom_test_requirement) : ?>
@@ -204,4 +204,5 @@
     </div>
     <script src="/js/react-app/maze-game/bundle.js"></script>
     <?php echoUOJPageFooter() ?>
+
 <?php endif ?>
