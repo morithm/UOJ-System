@@ -17,6 +17,7 @@ return [
 	'statistics' => '统计',
 	'run' => '运行',
 	'compile' => '编译',
+	'write code' => '编辑代码',
 	'source code' => '源文件',
 	'text file' => '文本文件',
 	'zip file upload introduction' => function ($str) {

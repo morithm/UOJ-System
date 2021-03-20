@@ -2,6 +2,10 @@
 requirePHPLib('form');
 requirePHPLib('judger');
 
+
+// header("Access-Control-Allow-Origin: *");
+// header("Access-Control-Allow-Headers: *");
+
 if (!validateUInt($_GET['id']) || !($problem = queryProblemBrief($_GET['id']))) {
     become404Page();
 }
@@ -12,10 +16,55 @@ if (!DB::selectFirst("select * from problems_tags where problem_id = {$problem['
 
 $problem_content = queryProblemContent($problem['id']);
 
+if (isset($_POST['test-judge'])) {
+    $submission = DB::selectFirst("select * from submissions where submitter = '" . Auth::id() . "' and problem_id = {$problem['id']} order by id desc limit 1");
+    $submission_content = json_decode($submission['content'], true);
+    echo $submission_content['file_name'];
+    echoSubmissionContent($submission, getProblemSubmissionRequirement($problem));
+    die();
+}
 
-if (isset($_GET['api'])) {
-    // header("Access-Control-Allow-Origin: *");
-    // header("Access-Control-Allow-Headers: *");
+if (isset($_POST['final-judge'])) {
+    $submission = DB::selectFirst("select * from custom_test_submissions where submitter = '" . Auth::id() . "' and problem_id = {$problem['id']} order by id desc limit 1");
+    $zip_file = new ZipArchive();
+    $submission_content = json_decode($submission['content'], true);
+    $old_name = UOJContext::storagePath() . $submission_content['file_name'];
+    $new_name = uojRandAvaiableFileName('/tmp/');
+    copy($old_name, UOJContext::storagePath() . $new_name);
+    $zip_file->open(UOJContext::storagePath() . $new_name);
+    $stat = $zip_file->statName("answer.code");
+
+    $tot_size = $stat['size'];
+
+    $content = array();
+    $content['file_name'] = $new_name;
+    $content['config'] = array();
+    $language = '/';
+
+    foreach ($submission_content['config'] as $row) {
+        if (strEndWith($row[0], '_language')) {
+            $content['config'][] = array("answer_language", $row[1]);
+            $language = $row[1];
+            break;
+        }
+    }
+
+    $content['config'][] = array("problem_id", $problem['id']);
+    $esc_content = DB::escape(json_encode($content));
+
+    if ($language != '/') {
+        Cookie::set('uoj_preferred_language', $language, time() + 60 * 60 * 24 * 365, '/');
+    }
+    $esc_language = DB::escape($language);
+
+    $result = array();
+    $result['status'] = "Waiting";
+    $result_json = json_encode($result);
+    DB::query("insert into submissions (problem_id, submit_time, submitter, content, language, tot_size, status, result, is_hidden) values (${problem['id']}, now(), 'root', '$esc_content', '$esc_language', $tot_size, '${result['status']}', '$result_json', {$problem['is_hidden']})");
+
+    echo "ok";
+    die();
+} else if (isset($_GET['api'])) {
     header("Content-type: application/json");
     if ($_GET['api'] == 'map') {
         $handle = fopen("/var/uoj_data/${problem['id']}/ex_code_game1.in", "r") or die("Unable to open file!");
@@ -30,16 +79,14 @@ if (isset($_GET['api'])) {
 
     if ($_GET['api'] == 'cmd') {
         if (Auth::check()) {
-            $custom_test_submission = DB::selectFirst("select * from custom_test_submissions where submitter = '" . Auth::id() . "' and problem_id = 3 order by id desc limit 1");
+            $custom_test_submission = DB::selectFirst("select * from custom_test_submissions where submitter = '" . Auth::id() . "' and problem_id = {$problem['id']} order by id desc limit 1");
             $custom_test_submission_result = json_decode($custom_test_submission['result'], true);
             $detail_str = $custom_test_submission_result['details'];
             preg_match('/\<out\>[\S]+\<\/out\>/',  $detail_str, $matches);
             echo json_encode(substr($matches[0], 5, -6));
+        } else {
+            echo json_encode("FFFLF");
         }
-        // else {
-        //     // echo json_encode("FFFFFRFF");
-        //     echo json_encode("FFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFRFFFFFR");
-        // }
     }
 } else {
     if (!isProblemVisibleToUser($problem, $myUser)) {
@@ -81,6 +128,32 @@ if (isset($_GET['api'])) {
             ));
         }
         die();
+    }
+
+    function handleUpload($zip_file_name, $content, $tot_size)
+    {
+        global $problem;
+
+        $content['config'][] = array('problem_id', $problem['id']);
+        $esc_content = DB::escape(json_encode($content));
+
+        $language = '/';
+        foreach ($content['config'] as $row) {
+            if (strEndWith($row[0], '_language')) {
+                $language = $row[1];
+                break;
+            }
+        }
+        if ($language != '/') {
+            Cookie::set('uoj_preferred_language', $language, time() + 60 * 60 * 24 * 365, '/');
+        }
+        $esc_language = DB::escape($language);
+
+        $result = array();
+        $result['status'] = "Waiting";
+        $result_json = json_encode($result);
+
+        DB::query("insert into submissions (problem_id, submit_time, submitter, content, language, tot_size, status, result, is_hidden) values (${problem['id']}, now(), '${myUser['username']}', '$esc_content', '$esc_language', $tot_size, '${result['status']}', '$result_json', {$problem['is_hidden']})");
     }
 
     function handleCustomTestUpload($zip_file_name, $content, $tot_size)
@@ -173,12 +246,12 @@ $memory_limit = $limit['memory_limit'];
         }
     </style>
     <?php echoUOJPageHeader(UOJLocale::get('code game')) ?>
-
+    <h1 class="page-header"><?= $problem['id'] ?>. <?= $problem['title'] ?></h1>
 
     <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item"><a class="nav-link active" href="#tab-statement" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-book"></span> <?= UOJLocale::get('problems::statement') ?></a></li>
         <?php if ($custom_test_requirement) : ?>
-            <li class="nav-item"><a class="nav-link" href="#tab-custom-test" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-console"></span> 编写代码</a></li>
+            <li class="nav-item"><a class="nav-link" href="#tab-custom-test" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-console"></span> <?= UOJLocale::get('problems::write code') ?></a></li>
         <?php endif ?>
         <?php if (hasProblemPermission($myUser, $problem)) : ?>
             <li class="nav-item"><a class="nav-link" href="/problem/<?= $problem['id'] ?>/manage/statement" role="tab"><?= UOJLocale::get('problems::manage') ?></a></li>
@@ -203,6 +276,18 @@ $memory_limit = $limit['memory_limit'];
         <?php endif ?>
     </div>
     <script src="/js/react-app/maze-game/bundle.js"></script>
+    <script>
+        $(function() {
+            $('#submit-code').click(function() {
+                $.post("/code-game/<?= $problem['id'] ?>", {
+                    "final-judge": ""
+                }, function(msg) {
+                    if (msg == "ok")
+                        window.location.href = '/submissions';
+                });
+            });
+        });
+    </script>
     <?php echoUOJPageFooter() ?>
 
 <?php endif ?>

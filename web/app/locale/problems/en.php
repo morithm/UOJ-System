@@ -17,6 +17,7 @@ return [
 	'statistics' => 'Statistics',
 	'run' => 'Run',
 	'compile' => 'Compile',
+	'write code' => 'Write Code',
 	'source code' => 'Source code',
 	'text file' => 'Text file',
 	'zip file upload introduction' => function ($str) {
