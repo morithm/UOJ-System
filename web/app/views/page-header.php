@@ -206,6 +206,14 @@ if (!isset($ShowPageHeader)) {
 		<?= HTML::js_src('/js/react-app/react-dom.development.js') ?>
 	<?php endif ?>
 
+	<?php if (isset($REQUIRE_LIB['craft'])) : ?>
+		<!-- craft -->
+		<?= HTML::js_src('/js/code-dot-org/craft/main.js') ?>
+		<?= HTML::js_src('/js/code-dot-org/craft/levels.js') ?>
+		<?= HTML::js_src('/js/code-dot-org/craft/soundEffects.js') ?>
+		<?= HTML::js_src('/js/code-dot-org/craft/phaser.js') ?>
+	<?php endif ?>
+
 	<?php if (isset($REQUIRE_LIB['shjs'])) : ?>
 		<!-- shjs -->
 		<?= HTML::css_link('/css/sh_typical.min.css') ?>

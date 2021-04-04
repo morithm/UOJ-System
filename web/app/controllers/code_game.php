@@ -65,16 +65,16 @@ if (isset($_POST['final-judge'])) {
     echo "ok";
     die();
 } else if (isset($_GET['api'])) {
-    header("Content-type: application/json");
     if ($_GET['api'] == 'map') {
-        $handle = fopen("/var/uoj_data/${problem['id']}/ex_code_game1.in", "r") or die("Unable to open file!");
-        fscanf($handle, "%d %d\n", $row, $col);
-        fscanf($handle, "%[^\n]", $map);
-        echo json_encode([
-            "map" => $map,
-            "row" => $row,
-            "col" => $col
-        ]);
+        // $handle = fopen("/var/uoj_data/${problem['id']}/ex_code_game1.in", "r") or die("Unable to open file!");
+        // fscanf($handle, "%d %d\n", $row, $col);
+        // fscanf($handle, "%[^\n]", $map);
+        // echo json_encode([
+        //     "map" => $map,
+        //     "row" => $row,
+        //     "col" => $col
+        // ]);
+        echo "adventurer03";
     }
 
     if ($_GET['api'] == 'cmd') {
@@ -82,10 +82,10 @@ if (isset($_POST['final-judge'])) {
             $custom_test_submission = DB::selectFirst("select * from custom_test_submissions where submitter = '" . Auth::id() . "' and problem_id = {$problem['id']} order by id desc limit 1");
             $custom_test_submission_result = json_decode($custom_test_submission['result'], true);
             $detail_str = $custom_test_submission_result['details'];
-            preg_match('/\<out\>[\S]+\<\/out\>/',  $detail_str, $matches);
-            echo json_encode(substr($matches[0], 5, -6));
+            preg_match('/\<out\>[\s\S]+\<\/out\>/',  $detail_str, $matches);
+            echo substr($matches[0], 5, -6);
         } else {
-            echo json_encode("FFFLF");
+            echo "FFFLF";
         }
     }
 } else {
@@ -213,7 +213,7 @@ if (isset($_POST['final-judge'])) {
         $custom_test_form->ctrl_enter_submit = true;
         $custom_test_form->setAjaxSubmit(
             <<<EOD
-    function(response_text) {custom_test_onsubmit(response_text, $('#div-custom_test_result')[0], '{$_SERVER['REQUEST_URI']}?get=custom-test-status-details')}
+    function(response_text) {custom_test_onsubmit(response_text, $('#div-custom_test_result')[0], '/code-game/{$problem['id']}/?get=custom-test-status-details')}
     EOD
         );
         $custom_test_form->submit_button_config['text'] = UOJLocale::get('problems::compile');
@@ -224,7 +224,7 @@ if (isset($_POST['final-judge'])) {
 <?php
 $REQUIRE_LIB['mathjax'] = '';
 $REQUIRE_LIB['shjs'] = '';
-$REQUIRE_LIB['react'] = '';
+$REQUIRE_LIB['craft'] = '';
 ?>
 <?php
 $limit = getUOJConf("/var/uoj_data/{$problem['id']}/problem.conf");
@@ -265,8 +265,14 @@ $memory_limit = $limit['memory_limit'];
             <div class="row">
                 <div id="code-game" data-api-url="/code-game/<?= $problem['id'] ?>/">
                 </div>
+                
                 <article class="col-sm-6 col-xs-12 top-buffer-md"><?= $problem_content['statement'] ?></article>
             </div>
+            <p>
+                <button id="reset-button">Reset</button>
+                <select id="level-load"></select>
+                <button id="run-code">run</button>
+            </p>
         </div>
         <?php if ($custom_test_requirement) : ?>
             <div class="tab-pane" id="tab-custom-test">
@@ -275,7 +281,7 @@ $memory_limit = $limit['memory_limit'];
             </div>
         <?php endif ?>
     </div>
-    <script src="/js/react-app/maze-game/bundle.js"></script>
+    <script src="/js/code-dot-org/craft/craft.js"></script>
     <script>
         $(function() {
             $('#submit-code').click(function() {
@@ -286,6 +292,7 @@ $memory_limit = $limit['memory_limit'];
                         window.location.href = '/submissions';
                 });
             });
+            
         });
     </script>
     <?php echoUOJPageFooter() ?>
